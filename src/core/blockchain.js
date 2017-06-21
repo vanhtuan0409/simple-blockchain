@@ -15,15 +15,30 @@ const beforeHash =
   genesisBlock.timestamp.toString();
 genesisBlock.hash = hash(beforeHash);
 
+// Define class
 export default class BlockChain {
   static GenesisBlock(): Block {
     return genesisBlock;
   }
 
   chain: Array<Block>;
+  getChain: Function;
+  getSize: Function;
+  getLatestBlock: Function;
+  commit: Function;
+  generateNextBlock: Function;
+  isValidNextBlock: Function;
+  addNewBlock: Function;
 
   constructor() {
     this.chain = [genesisBlock];
+    this.getChain = this.getChain.bind(this);
+    this.getSize = this.getSize.bind(this);
+    this.getLatestBlock = this.getLatestBlock.bind(this);
+    this.commit = this.commit.bind(this);
+    this.generateNextBlock = this.generateNextBlock.bind(this);
+    this.isValidNextBlock = this.isValidNextBlock.bind(this);
+    this.addNewBlock = this.addNewBlock.bind(this);
   }
 
   getChain(): Array<Block> {
