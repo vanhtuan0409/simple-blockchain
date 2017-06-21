@@ -8,6 +8,7 @@ export default class SocketPool {
   addSocket: Function;
   removeSocket: Function;
   broadcast: Function;
+  emit: Function;
 
   constructor() {
     this.pool = [];
@@ -16,6 +17,7 @@ export default class SocketPool {
     this.removeSocket = this.removeSocket.bind(this);
     this.broadcast = this.broadcast.bind(this);
     this.getConnectedNodes = this.getConnectedNodes.bind(this);
+    this.emit = this.emit.bind(this);
   }
 
   isExist(ws: WebSocket): boolean {
@@ -45,9 +47,13 @@ export default class SocketPool {
   }
 
   broadcast(type: string, data: Object) {
-    const message = { type, data };
     this.pool.forEach(ws => {
-      ws.emit(type, data);
+      this.emit(ws, type, data);
     });
+  }
+
+  emit(ws: WebSocket, type: string, data: Object) {
+    const message = JSON.stringify({ type, data });
+    ws.send(message);
   }
 }

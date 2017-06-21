@@ -9,6 +9,7 @@ import BlockChain from "./core/blockchain";
 import Block from "./core/block";
 
 import Controller from "./server/controller";
+import SocketHandler from "./server/socketHandler";
 import { handleSocketConnection } from "./server/socket";
 import SocketPool from "./server/socketPool";
 
@@ -16,6 +17,7 @@ import SocketPool from "./server/socketPool";
 const pool = new SocketPool();
 const bc = new BlockChain();
 const ctrl = new Controller(bc, pool);
+const handler = new SocketHandler(bc, pool);
 const argv = yargs.array("peers").argv;
 
 // Init infrastructure
@@ -39,14 +41,14 @@ wss.on("connection", function(ws: WebSocket, req: http.IncomingMessage) {
   const incommingPort = incommingSocket.remotePort.toString();
   // $FlowFixMe
   ws.url = `${incommingHost}:${incommingPort}`;
-  handleSocketConnection(ws, pool);
+  handleSocketConnection(ws, pool, handler);
 });
 
 // Connect to initial peers
 const peers = argv.peers || [];
 peers.forEach(p => {
   const ws = new WebSocket(p);
-  ws.on("open", () => handleSocketConnection(ws, pool));
+  ws.on("open", () => handleSocketConnection(ws, pool, handler));
 });
 
 const port = parseInt(process.env.HTTP_PORT, 10) || argv.port || 3000;
