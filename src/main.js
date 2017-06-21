@@ -13,7 +13,7 @@ import SocketPool from "./server/socketPool";
 // Create actual blockchain data
 const pool = new SocketPool();
 const bc = new BlockChain();
-const ctrl = new Controller(bc, pool.broadcast);
+const ctrl = new Controller(bc, pool);
 
 // Init infrastructure
 const app = express();
@@ -23,6 +23,7 @@ const io = socketIO(server);
 // Routing http request
 app.use(parser.json());
 app.get("/chain", ctrl.getChain);
+app.get("/peers", ctrl.getPeers);
 app.post("/commit", ctrl.commit);
 app.all("*", function(req, res) {
   res.status(404).end();

@@ -4,19 +4,26 @@ import SocketIO from "socket.io";
 export default class SocketPool {
   pool: Array<SocketIO.Socket>;
   isExist: Function;
+  getConnectedNodes: Function;
   addSocket: Function;
   removeSocket: Function;
   broadcast: Function;
+
   constructor() {
     this.pool = [];
     this.isExist = this.isExist.bind(this);
     this.addSocket = this.addSocket.bind(this);
     this.removeSocket = this.removeSocket.bind(this);
     this.broadcast = this.broadcast.bind(this);
+    this.getConnectedNodes = this.getConnectedNodes.bind(this);
   }
 
   isExist(ws: SocketIO.Socket): boolean {
     return this.pool.includes(ws);
+  }
+
+  getConnectedNodes(): Array<string> {
+    return this.pool.map(ws => ws.handshake.address);
   }
 
   addSocket(ws: SocketIO.Socket): boolean {
