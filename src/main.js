@@ -29,8 +29,12 @@ app.all("*", function(req, res) {
 });
 
 // Routing socket request
-io.on("connection", function(socket) {
+io.on("connection", function(ws) {
   console.log("A new node has been connected");
+  pool.addSocket(ws);
+  ws.on("hello", data => console.log(data));
+  ws.on("close", () => pool.removeSocket(ws));
+  ws.on("error", () => pool.removeSocket(ws));
 });
 
 const port = parseInt(process.env.HTTP_PORT, 10) || 3000;

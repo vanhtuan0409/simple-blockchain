@@ -1,8 +1,8 @@
 // @flow
-import { Socket } from "socket.io";
+import SocketIO from "socket.io";
 
 export default class SocketPool {
-  pool: Array<Socket>;
+  pool: Array<SocketIO.Socket>;
   isExist: Function;
   addSocket: Function;
   removeSocket: Function;
@@ -15,11 +15,11 @@ export default class SocketPool {
     this.broadcast = this.broadcast.bind(this);
   }
 
-  isExist(ws: Socket): boolean {
+  isExist(ws: SocketIO.Socket): boolean {
     return this.pool.includes(ws);
   }
 
-  addSocket(ws: Socket): boolean {
+  addSocket(ws: SocketIO.Socket): boolean {
     if (!this.isExist(ws)) {
       this.pool.push(ws);
       return true;
@@ -27,7 +27,7 @@ export default class SocketPool {
     return false;
   }
 
-  removeSocket(ws: Socket): boolean {
+  removeSocket(ws: SocketIO.Socket): boolean {
     const index = this.pool.indexOf(ws);
     if (index > -1) {
       this.pool.splice(index, 1);
@@ -39,7 +39,7 @@ export default class SocketPool {
   broadcast(type: string, data: Object) {
     const message = { type, data };
     this.pool.forEach(ws => {
-      ws.write(JSON.stringify(message));
+      ws.emit(type, data);
     });
   }
 }
