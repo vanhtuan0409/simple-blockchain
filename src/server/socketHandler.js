@@ -1,5 +1,7 @@
+// @flow
 import WebSocket from "ws";
 import BlockChain from "../core/blockchain";
+import Block from "../core/block";
 import SocketPool from "./socketPool";
 
 export default class SocketHandler {
@@ -16,10 +18,12 @@ export default class SocketHandler {
   }
 
   getBlockChain(ws: WebSocket, data: Object) {
+    const latestBlock = this.bc.getLatestBlock();
     this.pool.emit(ws, "RESPONSE_BLOCK_CHAIN", this.bc);
   }
 
   receiveBlockChain(ws: WebSocket, data: Object) {
-    console.log(data);
+    const receivedChain = BlockChain.fromObject(data);
+    const latestBlock = receivedChain.getLatestBlock();
   }
 }

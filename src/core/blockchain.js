@@ -21,6 +21,15 @@ export default class BlockChain {
     return genesisBlock;
   }
 
+  static fromObject(obj: Object): BlockChain {
+    const chain: BlockChain = Object.create(BlockChain.prototype);
+    chain.chain = [];
+    obj.chain.forEach(block => {
+      chain.chain.push(Block.fromObject(block));
+    });
+    return chain;
+  }
+
   chain: Array<Block>;
   getChain: Function;
   getSize: Function;

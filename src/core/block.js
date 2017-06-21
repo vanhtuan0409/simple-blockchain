@@ -17,6 +17,16 @@ export default class Block {
     return testHash === block.hash;
   }
 
+  static fromObject(obj: Object): Block {
+    const block: Block = Object.create(Block.prototype);
+    block.id = (obj.id: number);
+    block.previousHash = (obj.previousHash: string);
+    block.hash = (obj.hash: string);
+    block.data = (obj.data: Object);
+    block.timestamp = new Date(obj.timestamp);
+    return block;
+  }
+
   constructor(data: Object, previousBlock: Block) {
     this.id = previousBlock.id + 1;
     this.previousHash = previousBlock.hash;
