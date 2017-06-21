@@ -1,3 +1,4 @@
+// @flow
 import Block from "./block";
 import { hash } from "./hash";
 
@@ -15,7 +16,9 @@ const beforeHash =
 genesisBlock.hash = hash(beforeHash);
 
 export default class BlockChain {
-  static GenesisBlock: genesisBlock;
+  static GenesisBlock(): Block {
+    return genesisBlock;
+  }
 
   chain: Array<Block>;
 

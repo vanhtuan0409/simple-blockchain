@@ -1,3 +1,4 @@
+// @flow
 import { hash } from "./hash";
 
 export default class Block {

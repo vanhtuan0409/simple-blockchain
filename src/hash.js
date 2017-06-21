@@ -1,3 +1,4 @@
+// @flow
 import crypto from "crypto";
 
 const HASH_KEY = "abcxyz123456";
