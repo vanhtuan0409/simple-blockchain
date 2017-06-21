@@ -3,8 +3,6 @@ import WebSocket from "ws";
 import SocketPool from "./socketPool";
 import SocketHandler from "./socketHandler";
 
-const REQUEST_BLOCK_CHAIN = "REQUEST_BLOCK_CHAIN";
-
 export function handleSocketConnection(
   ws: WebSocket,
   pool: SocketPool,
@@ -12,7 +10,7 @@ export function handleSocketConnection(
 ) {
   console.log("A new node has been connected");
   pool.addSocket(ws);
-  pool.emit(ws, REQUEST_BLOCK_CHAIN);
+  pool.emit(ws, "REQUEST_BLOCK_CHAIN");
 
   ws.on("message", message => handleSocketMessage(ws, message, handler));
   ws.on("close", () => pool.removeSocket(ws));
@@ -26,7 +24,11 @@ function handleSocketMessage(
 ) {
   const event = JSON.parse(message);
   switch (event.type) {
-    case REQUEST_BLOCK_CHAIN:
+    case "REQUEST_BLOCK_CHAIN":
       handler.getBlockChain(ws, event.data);
+      break;
+    case "RESPONSE_BLOCK_CHAIN":
+      handler.receiveBlockChain(ws, event.data);
+      break;
   }
 }
