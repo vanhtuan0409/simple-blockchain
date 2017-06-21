@@ -4,11 +4,13 @@ import { Request, Response } from "express";
 
 export default class Controller {
   bc: BlockChain;
+  broadcast: Function;
   getChain: Function;
   commit: Function;
 
-  constructor(chain: BlockChain) {
+  constructor(chain: BlockChain, broadcast: Function) {
     this.bc = chain;
+    this.broadcast = broadcast;
     this.getChain = this.getChain.bind(this);
     this.commit = this.commit.bind(this);
   }

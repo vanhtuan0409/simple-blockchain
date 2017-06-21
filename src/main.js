@@ -8,10 +8,12 @@ import BlockChain from "./core/blockchain";
 import Block from "./core/block";
 
 import Controller from "./server/controller";
+import SocketPool from "./server/socketPool";
 
 // Create actual blockchain data
+const pool = new SocketPool();
 const bc = new BlockChain();
-const ctrl = new Controller(bc);
+const ctrl = new Controller(bc, pool.broadcast);
 
 // Init infrastructure
 const app = express();
