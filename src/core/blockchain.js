@@ -7,7 +7,7 @@ const genesisBlock: Block = Object.create(Block.prototype);
 genesisBlock.id = 0;
 genesisBlock.previousHash = "";
 genesisBlock.data = { msg: "This is the genesis block" };
-genesisBlock.timestamp = new Date();
+genesisBlock.timestamp = new Date("2017-01-01");
 const beforeHash =
   genesisBlock.id.toString() +
   JSON.stringify(genesisBlock.data) +
