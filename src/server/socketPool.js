@@ -1,8 +1,8 @@
 // @flow
-import SocketIO from "socket.io";
+import WebSocket from "ws";
 
 export default class SocketPool {
-  pool: Array<SocketIO.Socket>;
+  pool: Array<WebSocket>;
   isExist: Function;
   getConnectedNodes: Function;
   addSocket: Function;
@@ -18,15 +18,15 @@ export default class SocketPool {
     this.getConnectedNodes = this.getConnectedNodes.bind(this);
   }
 
-  isExist(ws: SocketIO.Socket): boolean {
+  isExist(ws: WebSocket): boolean {
     return this.pool.includes(ws);
   }
 
   getConnectedNodes(): Array<string> {
-    return this.pool.map(ws => ws.handshake.address);
+    return this.pool.map(ws => ws.url);
   }
 
-  addSocket(ws: SocketIO.Socket): boolean {
+  addSocket(ws: WebSocket): boolean {
     if (!this.isExist(ws)) {
       this.pool.push(ws);
       return true;
@@ -34,9 +34,10 @@ export default class SocketPool {
     return false;
   }
 
-  removeSocket(ws: SocketIO.Socket): boolean {
+  removeSocket(ws: WebSocket): boolean {
     const index = this.pool.indexOf(ws);
     if (index > -1) {
+      console.log("A socket has disconnected");
       this.pool.splice(index, 1);
       return true;
     }
