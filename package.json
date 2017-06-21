@@ -1,0 +1,20 @@
+{
+  "name": "blockchain-simple-implementation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.5.2",
+    "babel-preset-flow": "^6.23.0",
+    "babel-register": "^6.24.1"
+  },
+  "babel": {
+    "presets": [
+      "env",
+      "flow"
+    ]
+  }
+}
