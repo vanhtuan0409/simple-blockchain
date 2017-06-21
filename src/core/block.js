@@ -1,5 +1,5 @@
 // @flow
-import { hash } from "./hash";
+import { hash } from "../crypto/hash";
 
 export default class Block {
   id: number;

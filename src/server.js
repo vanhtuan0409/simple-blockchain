@@ -1,41 +1,37 @@
 // @flow
 import express from "express";
+import http from "http";
 import parser from "body-parser";
-import BlockChain from "./blockchain";
-import Block from "./block";
+import socketIO from "socket.io";
+
+import BlockChain from "./core/blockchain";
+import Block from "./core/block";
+
+import Controller from "./server/controller";
 
 // Create actual blockchain data
 const bc = new BlockChain();
+const ctrl = new Controller(bc);
 
+// Init infrastructure
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
+// Routing http request
 app.use(parser.json());
-
-app.get("/chain", function(req, res) {
-  const chain = bc.getChain();
-  res.json(chain);
-});
-
-app.post("/commit", function(req, res) {
-  const body = req.body;
-  if (!body.data) {
-    res.status(400).end();
-    return;
-  }
-  try {
-    bc.commit(body.data);
-    res.status(200).end();
-  } catch (err) {
-    res.status(500).json({
-      error: err.message
-    });
-  }
-});
-
+app.get("/chain", ctrl.getChain);
+app.post("/commit", ctrl.commit);
 app.all("*", function(req, res) {
   res.status(404).end();
 });
 
-const port = process.env.HTTP_PORT || 3000;
-app.listen(port, function() {
+// Routing socket request
+io.on("connection", function(socket) {
+  console.log("A new node has been connected");
+});
+
+const port = parseInt(process.env.HTTP_PORT, 10) || 3000;
+server.listen(port, undefined, undefined, function(err) {
   console.log(`Node is running on port: ${port}`);
 });

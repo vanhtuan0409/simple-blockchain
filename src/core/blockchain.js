@@ -1,6 +1,6 @@
 // @flow
 import Block from "./block";
-import { hash } from "./hash";
+import { hash } from "../crypto/hash";
 
 // Calculate genesis block
 const genesisBlock: Block = Object.create(Block.prototype);
