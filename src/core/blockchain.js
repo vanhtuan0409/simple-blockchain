@@ -1,6 +1,7 @@
 // @flow
 import Block from "./block";
 import { hash } from "../crypto/hash";
+import equal from "deep-equal";
 
 // Calculate genesis block
 const genesisBlock: Block = Object.create(Block.prototype);
@@ -28,6 +29,27 @@ export default class BlockChain {
       chain.chain.push(Block.fromObject(block));
     });
     return chain;
+  }
+
+  static isSequenceBlock(prev: Block, next: Block): boolean {
+    if (!Block.validateHash(prev)) return false;
+    if (!Block.validateHash(next)) return false;
+    if (next.previousHash !== prev.hash) return false;
+    if (next.id - prev.id !== 1) return false;
+    return true;
+  }
+
+  static validateBlockChain(bc: BlockChain): boolean {
+    const chain = bc.getChain();
+    const zeroBlock = chain[0];
+    const isGenesisBlock = equal(zeroBlock, BlockChain.GenesisBlock());
+    if (!isGenesisBlock) return false;
+    for (let i = 1; i < chain.length; i++) {
+      const prevBlock = chain[i - 1];
+      const nextBlock = chain[i];
+      if (!BlockChain.isSequenceBlock(prevBlock, nextBlock)) return false;
+    }
+    return true;
   }
 
   chain: Array<Block>;
@@ -75,16 +97,21 @@ export default class BlockChain {
   }
 
   isValidNextBlock(block: Block): boolean {
-    if (!Block.validateHash(block)) return false;
     const latestBlock = this.getLatestBlock();
-    if (block.previousHash !== latestBlock.hash) return false;
-    if (block.id - latestBlock.id !== 1) return false;
-    return true;
+    return BlockChain.isSequenceBlock(latestBlock, block);
   }
 
   addNewBlock(block: Block) {
     if (!this.isValidNextBlock(block))
       throw new Error("Next block is not valid");
     this.chain.push(block);
+  }
+
+  replaceChain(chain: BlockChain) {
+    const isReceivedChainValid = BlockChain.validateBlockChain(chain);
+    if (!isReceivedChainValid) {
+      throw new Error("New chain is not valid");
+    }
+    this.chain = chain.chain;
   }
 }

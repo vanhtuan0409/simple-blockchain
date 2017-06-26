@@ -9,12 +9,14 @@ export default class SocketHandler {
   pool: SocketPool;
   getBlockChain: Function;
   receiveBlockChain: Function;
+  receiveNewBlock: Function;
 
   constructor(chain: BlockChain, pool: SocketPool) {
     this.bc = chain;
     this.pool = pool;
     this.getBlockChain = this.getBlockChain.bind(this);
     this.receiveBlockChain = this.receiveBlockChain.bind(this);
+    this.receiveNewBlock = this.receiveNewBlock.bind(this);
   }
 
   getBlockChain(ws: WebSocket, data: Object) {
@@ -24,6 +26,24 @@ export default class SocketHandler {
 
   receiveBlockChain(ws: WebSocket, data: Object) {
     const receivedChain = BlockChain.fromObject(data);
-    const latestBlock = receivedChain.getLatestBlock();
+    const receivedChainSize = receivedChain.getSize();
+    const holdChainSize = this.bc.getSize();
+
+    try {
+      if (receivedChainSize > holdChainSize) {
+        this.bc.replaceChain(receivedChain);
+      }
+    } catch (error) {
+      console.log(`[ERROR] ${error.message}`);
+    }
+  }
+
+  receiveNewBlock(ws: WebSocket, data: Object) {
+    const newBlock = Block.fromObject(data);
+    try {
+      this.bc.addNewBlock(newBlock);
+    } catch (error) {
+      console.log(`[ERROR] ${error.message}`);
+    }
   }
 }

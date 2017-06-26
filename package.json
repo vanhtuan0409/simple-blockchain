@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "body-parser": "^1.17.2",
+    "deep-equal": "^1.0.1",
     "express": "^4.15.3",
     "ws": "^3.0.0",
     "yargs": "^8.0.2"

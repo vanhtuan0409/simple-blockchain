@@ -30,5 +30,8 @@ function handleSocketMessage(
     case "RESPONSE_BLOCK_CHAIN":
       handler.receiveBlockChain(ws, event.data);
       break;
+    case "NEW_BLOCK_CREATED":
+      handler.receiveNewBlock(ws, event.data);
+      break;
   }
 }

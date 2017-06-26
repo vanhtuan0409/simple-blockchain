@@ -35,7 +35,8 @@ export default class Controller {
       return;
     }
     try {
-      this.bc.commit(body.data);
+      const newBlock = this.bc.commit(body.data);
+      this.pool.broadcast("NEW_BLOCK_CREATED", newBlock);
       res.status(200).end();
     } catch (err) {
       res.status(500).json({
